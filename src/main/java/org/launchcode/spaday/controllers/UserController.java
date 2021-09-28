@@ -3,6 +3,7 @@ package org.launchcode.spaday.controllers;
 import org.launchcode.spaday.models.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,20 +20,32 @@ public class UserController {
 
     @PostMapping
     public String processAddUserForm(Model model,
-                                     @ModelAttribute @Valid User user) {
-//        model.addAttribute("user", user);
-//        model.addAttribute("verify", verify);
-//        model.addAttribute("username", user.getUsername());
-//        model.addAttribute("email", user.getEmail());
-        if (user.getPassword().equals(user.getVerify())){
-            return "user/index";
+                                     @ModelAttribute @Valid User user, Errors errors) {
+
+        model.addAttribute("errors", errors);
+
+        String returnMsg = "";
+
+        if (errors.hasErrors()) {
+            returnMsg = "user/add";
         }
-        else {
-            model.addAttribute("error", "Passwords do not match");
-            return "user/add";
+
+        if (user.getPassword().equals(user.getVerify())) {
+            returnMsg = "user/index";
         }
+
+        return returnMsg;
 
     }
-
-
 }
+
+//
+//
+//        if (user.getPassword().equals(user.getVerify())) {
+//                return "user/index";
+//                } else {
+//                model.addAttribute("errors", "Passwords don't match!");
+//                return "user/add";
+//                }
+
+
